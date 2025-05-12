@@ -61,6 +61,8 @@ console.log(productsHTML)
 
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
+updateCartQuantity();
+
 function updateCartQuantity (){
     let cartQuantity = 0;
     
