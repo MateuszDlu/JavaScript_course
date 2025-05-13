@@ -1,8 +1,9 @@
-import { cart, removeFromCart, updateDeliveryOption } from '../../data/cart.js';
-import { products } from '../../data/products.js';
+import { cart, getCartQuantity, removeFromCart, updateDeliveryOption } from '../../data/cart.js';
+import { products, getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
-import { deliverOptions } from '../../data/deliveryOptions.js';
+import { deliveryOptions , getDeliveryOption} from '../../data/deliveryOptions.js';
+
 
 export function renderOrderSummery(){
 
@@ -11,23 +12,11 @@ export function renderOrderSummery(){
     cart.forEach((cartItem) => {
         const productId = cartItem.productId;
 
-        let matchingProduct;
+        const matchingProduct = getProduct(productId);
 
-        products.forEach((product) => {
-            if( product.id === productId){
-                matchingProduct = product;
-            }
-        });
+        const deliveryOptionId = cartItem.deliveryOptionId;
 
-        const deliverOptionId = cartItem.deliverOptionId;
-
-        let deliveryOption;
-
-        deliverOptions.forEach((option) => {
-            if(option.id === deliverOptionId){
-                deliveryOption = option;
-            }
-        })
+        const deliveryOption = getDeliveryOption(deliveryOptionId);
 
         const today = dayjs();
         const deliveryDate = today.add(deliveryOption.deliveryDays, 'days')
@@ -74,7 +63,7 @@ export function renderOrderSummery(){
     function deliveryOptionsHTML(matchingProduct, cartItem){
         let html = '';
 
-        deliverOptions.forEach((deliveryOption) => {
+        deliveryOptions.forEach((deliveryOption) => {
             const today = dayjs();
             const deliveryDate = today.add(deliveryOption.deliveryDays, 'days')
             const dateString = deliveryDate.format('dddd, MMMM D')
@@ -83,7 +72,7 @@ export function renderOrderSummery(){
             ? 'FREE' 
             : `$${formatCurrency(deliveryOption.priceCents)} -`
 
-            const isChecked = deliveryOption.id === cartItem.deliverOptionId
+            const isChecked = deliveryOption.id === cartItem.deliveryOptionId
 
             html += `
                 <div class="delivery-option js-delivery-option" data-product-id="${matchingProduct.id}" data-delivery-option-id="${deliveryOption.id}">
@@ -105,11 +94,7 @@ export function renderOrderSummery(){
     }
 
     function updateCartQuantity (){
-        let cartQuantity = 0;
-        
-        cart.forEach(cartItem => {
-            cartQuantity += cartItem.quantity;
-        })
+        const cartQuantity = getCartQuantity()
 
         document.querySelector('.js-return-to-home-link-quantity').innerHTML = `${cartQuantity} items`
     }
