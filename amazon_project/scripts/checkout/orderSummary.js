@@ -122,7 +122,5 @@ export function renderOrderSummery(){
 
 export function updateCartQuantity (){
     const cartQuantity = getCartQuantity()
-
-    console.log(document)
     document.querySelector('.js-return-to-home-link-quantity').innerHTML = `${cartQuantity} items`
 }
