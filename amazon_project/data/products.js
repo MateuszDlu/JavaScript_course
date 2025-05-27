@@ -93,6 +93,7 @@ export function loadProductsFetch(){
     })
     
   })
+  console.log('loaded products')
   return promise
 }
 // loadProductsFetch().then(() => {
